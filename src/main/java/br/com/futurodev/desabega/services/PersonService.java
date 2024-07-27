@@ -7,15 +7,16 @@ import br.com.futurodev.desabega.models.transport.CreatePersonForm;
 import br.com.futurodev.desabega.models.transport.PersonDto;
 import br.com.futurodev.desabega.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.security.KeyStore;
-import java.util.Optional;
 
 @Service
-public class PersonService {
+public class PersonService implements UserDetailsService {
 
     private final PersonRepository personRepository;
     private final PasswordEncoder passwordEncoder;
@@ -40,5 +41,11 @@ public class PersonService {
         person.setWallet(wallet);
         Person persistencePerson = this.personRepository.save(person);
         return new PersonDto(persistencePerson);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.personRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }
