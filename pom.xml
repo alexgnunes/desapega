@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.futurodev</groupId>
-	<artifactId>desabega</artifactId>
+	<artifactId>desapega</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>desabega</name>
 	<description>[M02S08]</description>
