@@ -1,5 +1,6 @@
 package br.com.futurodev.desabega.services;
 
+import br.com.futurodev.desabega.exception.PersonNotFoundException;
 import br.com.futurodev.desabega.exception.UserAlreadyRegisteredException;
 import br.com.futurodev.desabega.models.Person;
 import br.com.futurodev.desabega.models.Wallet;
@@ -47,5 +48,10 @@ public class PersonService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.personRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
+    }
+
+    public Person getSinglePerson(String email) throws PersonNotFoundException {
+        return this.personRepository.findByEmail(email)
+                .orElseThrow(() -> new PersonNotFoundException(email));
     }
 }

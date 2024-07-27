@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "person")
 public class Person implements UserDetails {
 
@@ -57,6 +59,7 @@ public class Person implements UserDetails {
         this.password = createPersonForm.password();
         this.phone = createPersonForm.phone();
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(UserAlreadyRegisteredException.class)
-    protected ResponseEntity<ProblemDetail> handlePersonNotFoundException(UserAlreadyRegisteredException e,
+    protected ResponseEntity<ProblemDetail> handleUserAlreadyRegisteredException(UserAlreadyRegisteredException e,
                                                                           HttpServletRequest request) {
         String detail = e.getMessage();
         HttpStatus conflict = HttpStatus.CONFLICT;
@@ -23,6 +23,16 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     protected ResponseEntity<ProblemDetail> handleUsernameNotFoundException(UsernameNotFoundException e,
+                                                                          HttpServletRequest request) {
+        String detail = e.getMessage();
+        HttpStatus conflict = HttpStatus.NOT_FOUND;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(conflict, detail);
+        problemDetail.setTitle(e.getMessage());
+        return ResponseEntity.status(conflict).body(problemDetail);
+    }
+
+    @ExceptionHandler(PersonNotFoundException.class)
+    protected ResponseEntity<ProblemDetail> handlePersonNotFoundException(PersonNotFoundException e,
                                                                           HttpServletRequest request) {
         String detail = e.getMessage();
         HttpStatus conflict = HttpStatus.NOT_FOUND;
