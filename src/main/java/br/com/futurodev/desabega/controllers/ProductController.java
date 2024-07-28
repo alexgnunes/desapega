@@ -2,16 +2,17 @@ package br.com.futurodev.desabega.controllers;
 
 import br.com.futurodev.desabega.exception.PersonNotFoundException;
 import br.com.futurodev.desabega.exception.UserAlreadyRegisteredException;
-import br.com.futurodev.desabega.models.transport.CreatePersonForm;
 import br.com.futurodev.desabega.models.transport.CreateProductForm;
-import br.com.futurodev.desabega.models.transport.PersonDto;
 import br.com.futurodev.desabega.models.transport.ProductDto;
-import br.com.futurodev.desabega.services.PersonService;
 import br.com.futurodev.desabega.services.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,13 @@ public class ProductController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ProductDto>> listAll (@PageableDefault(size = 1) Pageable pageable,
+                                                     @AuthenticationPrincipal UserDetails userInSession) throws PersonNotFoundException {
+        Page<ProductDto> list = this.productService.findAll(pageable,userInSession);
+        return ResponseEntity.ok(list);
     }
 }
 

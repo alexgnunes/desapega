@@ -5,10 +5,11 @@ import br.com.futurodev.desabega.exception.UserAlreadyRegisteredException;
 import br.com.futurodev.desabega.models.Person;
 import br.com.futurodev.desabega.models.Product;
 import br.com.futurodev.desabega.models.transport.CreateProductForm;
-import br.com.futurodev.desabega.models.transport.PersonDto;
 import br.com.futurodev.desabega.models.transport.ProductDto;
 import br.com.futurodev.desabega.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,12 @@ public class ProductService {
         Product product = new Product(createProductForm);
         product.setOwner(person);
 
-        Product persistenceProduct= this.productRepository.save(product);
+        Product persistenceProduct = this.productRepository.save(product);
         return new ProductDto(persistenceProduct);
     }
 
+    public Page<ProductDto> findAll(Pageable pageable, UserDetails userInSession) throws PersonNotFoundException {
+        Person person = this.personService.getSinglePerson((userInSession.getUsername()));
+        return this.productRepository.findAllByOwnerPersonIdAndDeletedFalse(person.getPersonId(), pageable).map(ProductDto::new);
+    }
 }
