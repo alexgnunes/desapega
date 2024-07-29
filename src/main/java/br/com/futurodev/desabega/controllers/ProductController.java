@@ -46,10 +46,17 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductDto>> listAll (@PageableDefault(size = 1) Pageable pageable,
+    public ResponseEntity<Page<ProductDto>> listAllByOwner (@PageableDefault(size = 10) Pageable pageable,
                                                      @AuthenticationPrincipal UserDetails userInSession) throws PersonNotFoundException {
-        Page<ProductDto> list = this.productService.findAll(pageable,userInSession);
+        Page<ProductDto> list = this.productService.listAllByOwner(pageable,userInSession);
         return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<Page<ProductDto>> findAvailableProducts (@PageableDefault(size = 10) Pageable pageable,
+                                                     @AuthenticationPrincipal UserDetails userInSession) throws PersonNotFoundException {
+        Page<ProductDto> list = this.productService.findAvailableProducts(pageable,userInSession);
+        return list.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(list);
     }
 }
 

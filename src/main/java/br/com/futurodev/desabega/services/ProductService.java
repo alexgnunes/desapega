@@ -34,8 +34,13 @@ public class ProductService {
         return new ProductDto(persistenceProduct);
     }
 
-    public Page<ProductDto> findAll(Pageable pageable, UserDetails userInSession) throws PersonNotFoundException {
+    public Page<ProductDto> listAllByOwner(Pageable pageable, UserDetails userInSession) throws PersonNotFoundException {
         Person person = this.personService.getSinglePerson((userInSession.getUsername()));
         return this.productRepository.findAllByOwnerPersonIdAndDeletedFalse(person.getPersonId(), pageable).map(ProductDto::new);
+    }
+
+    public Page<ProductDto> findAvailableProducts(Pageable pageable, UserDetails userInSession) throws PersonNotFoundException {
+        Person person = this.personService.getSinglePerson((userInSession.getUsername()));
+        return this.productRepository.findByOwnerPersonIdNotAndDeletedFalseAndSoldFalse(person.getPersonId(), pageable).map(ProductDto::new);
     }
 }
