@@ -40,4 +40,14 @@ public class ControllerExceptionHandler {
         problemDetail.setTitle(e.getMessage());
         return ResponseEntity.status(conflict).body(problemDetail);
     }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    protected ResponseEntity<ProblemDetail> handleProductNotFoundException(ProductNotFoundException e,
+                                                                          HttpServletRequest request) {
+        String detail = e.getMessage();
+        HttpStatus conflict = HttpStatus.NOT_FOUND;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(conflict, detail);
+        problemDetail.setTitle(e.getMessage());
+        return ResponseEntity.status(conflict).body(problemDetail);
+    }
 }
