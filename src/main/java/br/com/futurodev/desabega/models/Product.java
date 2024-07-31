@@ -59,4 +59,9 @@ public class Product {
         this.description = form.description() != null ? form.description() : this.description;
         this.price = form.price() != null ? form.price() : this.price;
     }
+
+    public void markAsDeleted() {
+        this.deleted = true;
+        this.deletedAt = LocalDateTime.now();
+    }
 }

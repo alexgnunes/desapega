@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,11 +72,17 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateTask(@PathVariable("id") Long id,
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Long id,
                                                  @RequestBody @Valid UpdateProductForm form,
                                                  @AuthenticationPrincipal UserDetails userInSession) throws ProductNotFoundException, PersonNotFoundException {
         ProductDto response = this.productService.updateProduct(id, form, userInSession);
         return ResponseEntity.ok(response);
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ProductDto> deleteProduct(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userInSession) throws PersonNotFoundException {
+        this.productService.deleteProduct(id,  userInSession);
+        return  ResponseEntity.noContent().build();
     }
 }
 

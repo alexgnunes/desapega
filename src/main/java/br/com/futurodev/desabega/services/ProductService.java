@@ -57,6 +57,7 @@ public class ProductService {
         return new ProductDto(product);
     }
 
+    @Transactional
     public ProductDto updateProduct(Long id, @Valid UpdateProductForm form, UserDetails userInSession) throws PersonNotFoundException {
         Person person = this.personService.getSinglePerson((userInSession.getUsername()));
         Product productForUpdate = this.productRepository.findByProductIdAndDeletedFalseAndOwnerPersonId(id,person.getPersonId())
@@ -64,5 +65,14 @@ public class ProductService {
 
         productForUpdate.updateAvailableAttributes(form);
         return new ProductDto(productForUpdate);
+    }
+
+    @Transactional
+    public void deleteProduct(Long id, UserDetails userInSession) throws PersonNotFoundException {
+        Person person = this.personService.getSinglePerson((userInSession.getUsername()));
+        Product response = this.productRepository.findByProductIdAndDeletedFalseAndOwnerPersonId(id,person.getPersonId())
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        response.markAsDeleted();
     }
 }
