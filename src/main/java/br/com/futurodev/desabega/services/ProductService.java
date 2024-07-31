@@ -7,8 +7,10 @@ import br.com.futurodev.desabega.models.Person;
 import br.com.futurodev.desabega.models.Product;
 import br.com.futurodev.desabega.models.transport.CreateProductForm;
 import br.com.futurodev.desabega.models.transport.ProductDto;
+import br.com.futurodev.desabega.models.transport.UpdateProductForm;
 import br.com.futurodev.desabega.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,11 +51,18 @@ public class ProductService {
 
     public ProductDto findProductsById(Long productId, UserDetails userInSession) throws PersonNotFoundException {
         Person person = this.personService.getSinglePerson((userInSession.getUsername()));
-        Optional<Product> product = this.productRepository.findByProductIdAndDeletedFalseAndOwnerPersonId(productId, person.getPersonId());
+        Product product = this.productRepository.findByProductIdAndDeletedFalseAndOwnerPersonId(productId, person.getPersonId())
+                .orElseThrow(() -> new ProductNotFoundException(productId));
 
-        if (product.isEmpty()){
-            throw new ProductNotFoundException(productId);
-        }
-        return new ProductDto(product.get());
+        return new ProductDto(product);
+    }
+
+    public ProductDto updateProduct(Long id, @Valid UpdateProductForm form, UserDetails userInSession) throws PersonNotFoundException {
+        Person person = this.personService.getSinglePerson((userInSession.getUsername()));
+        Product productForUpdate = this.productRepository.findByProductIdAndDeletedFalseAndOwnerPersonId(id,person.getPersonId())
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        productForUpdate.updateAvailableAttributes(form);
+        return new ProductDto(productForUpdate);
     }
 }

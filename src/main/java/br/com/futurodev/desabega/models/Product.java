@@ -2,6 +2,7 @@ package br.com.futurodev.desabega.models;
 
 
 import br.com.futurodev.desabega.models.transport.CreateProductForm;
+import br.com.futurodev.desabega.models.transport.UpdateProductForm;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,5 +52,11 @@ public class Product {
         this.productName = form.name();
         this.description = form.description();
         this.price = form.price();
+    }
+
+    public void updateAvailableAttributes(UpdateProductForm form) {
+        this.productName = form.name() != null ? form.name()  : this.productName;
+        this.description = form.description() != null ? form.description() : this.description;
+        this.price = form.price() != null ? form.price() : this.price;
     }
 }

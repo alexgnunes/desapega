@@ -1,9 +1,11 @@
 package br.com.futurodev.desabega.controllers;
 
 import br.com.futurodev.desabega.exception.PersonNotFoundException;
+import br.com.futurodev.desabega.exception.ProductNotFoundException;
 import br.com.futurodev.desabega.exception.UserAlreadyRegisteredException;
 import br.com.futurodev.desabega.models.transport.CreateProductForm;
 import br.com.futurodev.desabega.models.transport.ProductDto;
+import br.com.futurodev.desabega.models.transport.UpdateProductForm;
 import br.com.futurodev.desabega.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,9 +64,17 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> findProductsById(@PathVariable Long id,
+    public ResponseEntity<ProductDto> findProductsById(@PathVariable("id") Long productId,
                                                        @AuthenticationPrincipal UserDetails userInSession) throws PersonNotFoundException {
-        ProductDto response = this.productService.findProductsById(id, userInSession);
+        ProductDto response = this.productService.findProductsById(productId, userInSession);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDto> updateTask(@PathVariable("id") Long id,
+                                                 @RequestBody @Valid UpdateProductForm form,
+                                                 @AuthenticationPrincipal UserDetails userInSession) throws ProductNotFoundException, PersonNotFoundException {
+        ProductDto response = this.productService.updateProduct(id, form, userInSession);
         return ResponseEntity.ok(response);
     }
 }
